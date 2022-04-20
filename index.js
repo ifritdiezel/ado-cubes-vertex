@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
     io.emit('place', data);
   });
 
-// Identical to placement but sets to zero instead
+// Identical to placement
   socket.on('break', (data) => {
     pos = data.pos;
     for (const coord of pos){if (0 > coord > 64) return;}
@@ -44,8 +44,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 // Serve index.html (i hope)
 app.get('/', (req, res) => {
   console.log("Someone's asking to GET " + req.url);
-  if (req.url == '/') fileUrl = 'templates/index.html';
-  res.sendFile(__dirname + '/' + fileUrl);
+  if (req.url == '/') res.sendFile(__dirname + '/' + 'templates/index.html');
 });
 
 http.listen(port, () => {
