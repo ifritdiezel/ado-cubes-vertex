@@ -8,12 +8,12 @@ const path = require('path');
 const port = 1180;
 
 var world = require("./world.json");
-// Allows for avoiding saving on every block place event
-var cubecounter = 0;
+var lastsaved = Date.now();
 
 
 io.on('connection', (socket) => {
   socket.emit('connected', world);
+
 
   socket.on('place', (data) => {
     pos = data.pos;
@@ -22,9 +22,17 @@ io.on('connection', (socket) => {
     // Set the block serverside
     world[pos[0]][pos[1]][pos[2]] = 1;
     io.emit('place', data);
+    // If 10 minutes passed since last place event, save the world
+    if (Date.now() - lastsaved > 600000){
+      console.log('Autosaving...')
+      fs.writeFile('./world.json', JSON.stringify(world), err => {
+        if(err) throw err;
+      });
+    }
+
   });
 
-// Identical to placement
+  // Identical to placement
   socket.on('break', (data) => {
     pos = data.pos;
     for (const coord of pos){if (0 > coord > 64) return;}
@@ -35,6 +43,7 @@ io.on('connection', (socket) => {
   socket.on('message', (data) => {
     io.emit('message', data);
   });
+
 
 });
 
