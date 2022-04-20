@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { PointerLockControls } from "/static/jsm/controls/PointerLockControls.js";
+import { PointerLockControls } from "/jsm/controls/PointerLockControls.js";
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -187,12 +187,12 @@ function onWindowResize() {
 
 const loader = new THREE.CubeTextureLoader();
 const texture = loader.load([
-    '/static/sky/Daylight Box_Right.bmp',
-    '/static/sky/Daylight Box_Left.bmp',
-    '/static/sky/Daylight Box_Top.bmp',
-    '/static/sky/Daylight Box_Bottom.bmp',
-    '/static/sky/Daylight Box_Front.bmp',
-    '/static/sky/Daylight Box_Back.bmp',
+    '/sky/Daylight Box_Right.bmp',
+    '/sky/Daylight Box_Left.bmp',
+    '/sky/Daylight Box_Top.bmp',
+    '/sky/Daylight Box_Bottom.bmp',
+    '/sky/Daylight Box_Front.bmp',
+    '/sky/Daylight Box_Back.bmp',
 ]);
 scene.background = texture
 
@@ -229,9 +229,11 @@ scene.add(light);
 var socket;
 
 function placeCube(pos) {
+
     raycaster.setFromCamera({ "x": 0.0, "y": 0.0 }, camera);
 
     const intersects = raycaster.intersectObjects(scene.children);
+    console.log('placing cube at ' + pos)
 
     if (intersects.length > 0) {
         const intersect = intersects[0];
@@ -244,9 +246,9 @@ function placeCube(pos) {
         } else {
             pos.add(intersect.object.position)
             pos.add(intersect.face.normal)
-            console.log(pos)
             socket.emit("place", { "pos": [~~(pos.x + 0.5), ~~(pos.y + 0.5), ~~(pos.z + 0.5)] });
         }
+      
     }
 
 }
@@ -304,7 +306,7 @@ function escapeHTML(unsafe) {
 }
 
 let nick = "";
-let verified = false;
+let verified = true;
 nickinput.onkeydown = function (input) {
     if (input.keyCode == 13 && nickinput.value !== "") {
         if (!verified) {
@@ -328,7 +330,7 @@ export function verify(uuid) {
         document.getElementById("messages").insertAdjacentHTML('beforeend', "<b>" + escapeHTML(data["sender"]) + "</b>: " + escapeHTML(data["message"]) + "<br>")
         scrollToBottom(document.getElementById("messages"));
     });
-    
+
     socket.on('connected', function (arr) {
         console.log(arr);
         window.arr = arr;
@@ -342,9 +344,10 @@ export function verify(uuid) {
             }
         }
     })
-        
+
     socket.on('place', function (data) {
         let pos = data.pos;
+        console.log("cube received")
         addCube(new THREE.Vector3(pos[0], pos[1], pos[2]));
     });
 
