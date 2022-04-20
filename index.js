@@ -24,7 +24,8 @@ io.on('connection', (socket) => {
     io.emit('place', data);
     // If 10 minutes passed since last place event, save the world
     if (Date.now() - lastsaved > 600000){
-      console.log('Autosaving...')
+      console.log('Autosaving...');
+      lastsaved = Date.now();
       fs.writeFile('./world.json', JSON.stringify(world), err => {
         if(err) throw err;
       });
