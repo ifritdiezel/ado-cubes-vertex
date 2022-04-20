@@ -13,13 +13,12 @@
   "author": "ifritdiezel",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ado1928/ado-cubes/issues"
+    "url": "https://github.com/ifritdiezel/ado-cubes-vertex/issues"
   },
-  "homepage": "https://github.com/ado1928/ado-cubes#readme",
+  "homepage": "https://github.com/ifritdiezel/ado-cubes-vertex",
   "dependencies": {
     "express": "^4.17.3",
     "http": "^0.0.1-security",
-    "mime-types": "^2.1.35",
     "socket.io": "^4.4.1"
   }
 }
